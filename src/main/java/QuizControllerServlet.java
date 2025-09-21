@@ -52,9 +52,6 @@ public class QuizControllerServlet extends HttpServlet {
         Question currentQuestion = questions.get(currentQuestionIndex);
         String correctAnswer = getOptionByIndex(currentQuestion, currentQuestion.getTrueAnswer());
 
-        System.out.println("correctAnswer: " + correctAnswer);
-        System.out.println("answer: " + answer);
-
         if (answer.equals(correctAnswer)) {
             currentQuestionIndex++;
             session.setAttribute("currentQuestionIndex", currentQuestionIndex);
