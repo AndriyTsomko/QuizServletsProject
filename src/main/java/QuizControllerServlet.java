@@ -1,0 +1,115 @@
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.List;
+
+@WebServlet("/quiz")
+public class QuizControllerServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+
+        String level = req.getParameter("level");
+        int totalTries = getTriesByLevel(level);
+
+        session.removeAttribute("currentQuestionIndex");
+        session.removeAttribute("tries");
+        session.removeAttribute("questions");
+        session.removeAttribute("totalTries");
+
+        List<Question> questions = QuestionsBase.getInstance().getQuestions();
+
+        if (!questions.isEmpty()) {
+            session.setAttribute("questions", questions);
+            session.setAttribute("currentQuestionIndex", 0);
+            session.setAttribute("tries", 0);
+            session.setAttribute("totalTries", totalTries);
+
+            showQuestion(req, resp, 0);
+
+        } else {
+            resp.getWriter().println("Помилка: Немає доступних питань.");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        HttpSession session = req.getSession();
+        String answer = req.getParameter("answer");
+
+        List<Question> questions = (List<Question>) session.getAttribute("questions");
+        int currentQuestionIndex = (int) session.getAttribute("currentQuestionIndex");
+        int tries = (int) session.getAttribute("tries");
+        int totalTries = (int) session.getAttribute("totalTries");
+
+        Question currentQuestion = questions.get(currentQuestionIndex);
+        String correctAnswer = getOptionByIndex(currentQuestion, currentQuestion.getTrueAnswer());
+
+        System.out.println("correctAnswer: " + correctAnswer);
+        System.out.println("answer: " + answer);
+
+        if (answer.equals(correctAnswer)) {
+            currentQuestionIndex++;
+            session.setAttribute("currentQuestionIndex", currentQuestionIndex);
+
+            if (currentQuestionIndex < questions.size()) {
+                showQuestion(req, resp, currentQuestionIndex);
+            } else {
+                req.getRequestDispatcher("/result.jsp").forward(req, resp);
+            }
+        } else {
+
+            tries++;
+            session.setAttribute("tries", tries);
+            if (tries >= totalTries) {
+                req.getRequestDispatcher("/fail.jsp").forward(req, resp);
+            } else {
+                showQuestion(req, resp, currentQuestionIndex);
+            }
+        }
+    }
+
+    private void showQuestion(HttpServletRequest req, HttpServletResponse resp, int index) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        List<Question> questions = (List<Question>) session.getAttribute("questions");
+        Question currentQuestion = questions.get(index);
+
+        req.setAttribute("image", currentQuestion.getBoxerImage());
+        req.setAttribute("options", List.of(
+                currentQuestion.getFirstOption(),
+                currentQuestion.getSecondOption(),
+                currentQuestion.getThirdOption(),
+                currentQuestion.getFourthOption()
+        ));
+        req.setAttribute("currentQuestionIndex", index);
+        req.setAttribute("tries", session.getAttribute("tries"));
+        req.setAttribute("questionsCount", questions.size());
+
+        req.getRequestDispatcher("/quiz.jsp").forward(req, resp);
+    }
+
+    private String getOptionByIndex(Question question, int index) {
+        return switch (index) {
+            case 1 -> question.getFirstOption();
+            case 2 -> question.getSecondOption();
+            case 3 -> question.getThirdOption();
+            case 4 -> question.getFourthOption();
+            default -> "";
+        };
+    }
+    private int getTriesByLevel(String level) {
+        return switch(level){
+            case "easy" -> 5;
+            case "medium" -> 2;
+            case "hard" -> 1;
+            default -> 3;
+        };
+    }
+}
