@@ -1,0 +1,94 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #333;
+    text-align: center;
+}
+
+.welcome-page { background-color: #f0f8ff; }
+.quiz-page { background-color: #e6f7ff; }
+.result-page { background-color: #d1ffdb; }
+.fail-page { background-color: #ffe8e8; }
+
+.container {
+    background-color: #fff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
+
+h1, h2, h3 { color: #004d40; }
+
+.btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-easy:hover {
+    background-color: #218838;
+}
+
+.btn-medium:hover {
+    background-color: #e0a800;
+}
+
+.btn-hard:hover {
+    background-color: #c82333;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.boxer-photo {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    border: 3px solid #ddd;
+}
+
+.options {
+    margin: 2rem 0;
+    text-align: left;
+    display: grid;
+    gap: 1rem;
+}
+
+.option {
+    display: block;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.option:hover { background-color: #f0f0f0; }
+
+.option input[type="radio"] {
+    margin-right: 1rem;
+}
+
+.tries {
+    font-weight: bold;
+    color: #d9534f;
+}
