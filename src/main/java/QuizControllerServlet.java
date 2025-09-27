@@ -1,4 +1,3 @@
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +15,7 @@ public class QuizControllerServlet extends HttpServlet {
         HttpSession session = req.getSession();
 
         String level = req.getParameter("level");
-        int totalTries = getTriesByLevel(level);
+        int totalTries = Level.fromString(level).getTries();
 
         session.removeAttribute("currentQuestionIndex");
         session.removeAttribute("tries");
@@ -50,7 +49,7 @@ public class QuizControllerServlet extends HttpServlet {
         int totalTries = (int) session.getAttribute("totalTries");
 
         Question currentQuestion = questions.get(currentQuestionIndex);
-        String correctAnswer = getOptionByIndex(currentQuestion, currentQuestion.getTrueAnswer());
+        String correctAnswer = currentQuestion.getCorrectAnswer();
 
         if (answer.equals(correctAnswer)) {
             currentQuestionIndex++;
@@ -62,7 +61,6 @@ public class QuizControllerServlet extends HttpServlet {
                 req.getRequestDispatcher("/result.jsp").forward(req, resp);
             }
         } else {
-
             tries++;
             session.setAttribute("tries", tries);
             if (tries >= totalTries) {
@@ -90,23 +88,5 @@ public class QuizControllerServlet extends HttpServlet {
         req.setAttribute("questionsCount", questions.size());
 
         req.getRequestDispatcher("/quiz.jsp").forward(req, resp);
-    }
-
-    private String getOptionByIndex(Question question, int index) {
-        return switch (index) {
-            case 1 -> question.getFirstOption();
-            case 2 -> question.getSecondOption();
-            case 3 -> question.getThirdOption();
-            case 4 -> question.getFourthOption();
-            default -> "";
-        };
-    }
-    private int getTriesByLevel(String level) {
-        return switch(level){
-            case "easy" -> 5;
-            case "medium" -> 2;
-            case "hard" -> 1;
-            default -> 3;
-        };
     }
 }
