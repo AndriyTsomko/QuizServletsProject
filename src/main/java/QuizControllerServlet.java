@@ -76,13 +76,8 @@ public class QuizControllerServlet extends HttpServlet {
         List<Question> questions = (List<Question>) session.getAttribute("questions");
         Question currentQuestion = questions.get(index);
 
-        req.setAttribute("image", currentQuestion.getBoxerImage());
-        req.setAttribute("options", List.of(
-                currentQuestion.getFirstOption(),
-                currentQuestion.getSecondOption(),
-                currentQuestion.getThirdOption(),
-                currentQuestion.getFourthOption()
-        ));
+        req.setAttribute("image", currentQuestion.getImage());
+        req.setAttribute("options", currentQuestion.getOptions());
         req.setAttribute("currentQuestionIndex", index);
         req.setAttribute("tries", session.getAttribute("tries"));
         req.setAttribute("questionsCount", questions.size());
