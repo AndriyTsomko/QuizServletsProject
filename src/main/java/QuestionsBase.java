@@ -1,17 +1,22 @@
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.util.List;
 
 @Getter
 public class QuestionsBase {
+    private static final Logger LOGGER = LogManager.getLogger(QuestionsBase.class);
+
     private static QuestionsBase instance;
 
     private final List<Question> questions;
 
     public QuestionsBase() {
+        LOGGER.info("create questions instance");
         this.questions = loadQuestionsFromJson("/questions.json");
     }
 
@@ -27,7 +32,7 @@ public class QuestionsBase {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(is, new TypeReference<>() {});
         } catch (Exception e) {
-            System.out.println("Error loading questions from file " + filePath);
+            LOGGER.error("Error loading questions from file {}", filePath);
             return List.of();
         }
     }

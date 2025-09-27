@@ -1,3 +1,6 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,11 +13,14 @@ import java.util.List;
 @WebServlet("/quiz")
 public class QuizControllerServlet extends HttpServlet {
 
+    private static final Logger LOGGER = LogManager.getLogger(QuizControllerServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
 
         String level = req.getParameter("level");
+        LOGGER.debug("Starting new quiz with level: {}", level);
         int totalTries = Level.fromString(level).getTries();
 
         session.removeAttribute("currentQuestionIndex");
@@ -33,6 +39,7 @@ public class QuizControllerServlet extends HttpServlet {
             showQuestion(req, resp, 0);
 
         } else {
+            LOGGER.error("No questions found");
             resp.getWriter().println("Error: No questions available.");
         }
     }
@@ -52,6 +59,7 @@ public class QuizControllerServlet extends HttpServlet {
         String correctAnswer = currentQuestion.getCorrectAnswer();
 
         if (answer.equals(correctAnswer)) {
+            LOGGER.debug("Correct answer for question {}", currentQuestionIndex);
             currentQuestionIndex++;
             session.setAttribute("currentQuestionIndex", currentQuestionIndex);
 
@@ -59,12 +67,15 @@ public class QuizControllerServlet extends HttpServlet {
                 showQuestion(req, resp, currentQuestionIndex);
             } else {
                 req.getRequestDispatcher("/result.jsp").forward(req, resp);
+                LOGGER.debug("user win");
             }
         } else {
             tries++;
             session.setAttribute("tries", tries);
+            LOGGER.debug("Wrong answer for question {}. Tries: {}", currentQuestionIndex, tries);
             if (tries >= totalTries) {
                 req.getRequestDispatcher("/fail.jsp").forward(req, resp);
+                LOGGER.debug("Tries exceeded for question {}", currentQuestionIndex);
             } else {
                 showQuestion(req, resp, currentQuestionIndex);
             }
@@ -72,6 +83,8 @@ public class QuizControllerServlet extends HttpServlet {
     }
 
     private void showQuestion(HttpServletRequest req, HttpServletResponse resp, int index) throws ServletException, IOException {
+        LOGGER.debug("showQuestion {}", index);
+
         HttpSession session = req.getSession();
         List<Question> questions = (List<Question>) session.getAttribute("questions");
         Question currentQuestion = questions.get(index);
