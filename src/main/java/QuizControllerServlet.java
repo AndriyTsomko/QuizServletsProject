@@ -34,7 +34,7 @@ public class QuizControllerServlet extends HttpServlet {
             showQuestion(req, resp, 0);
 
         } else {
-            resp.getWriter().println("Помилка: Немає доступних питань.");
+            resp.getWriter().println("Error: No questions available.");
         }
     }
 
