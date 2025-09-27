@@ -1,10 +1,13 @@
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class QuestionsBase {
     private static QuestionsBase instance;
 
-    private List<Question> questions;
+    private final List<Question> questions;
 
     public QuestionsBase() {
         this.questions = new ArrayList<>();
@@ -73,7 +76,4 @@ public class QuestionsBase {
         return instance;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
-    }
 }
