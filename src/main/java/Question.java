@@ -7,9 +7,9 @@ public class Question {
     private final String secondOption;
     private final String thirdOption;
     private final String fourthOption;
-    private final Integer trueAnswer;
+    private final int trueAnswer;
 
-    public Question(String boxerImage, String firstOption, String secondOption, String thirdOption, String fourthOption, Integer trueAnswer) {
+    public Question(String boxerImage, String firstOption, String secondOption, String thirdOption, String fourthOption, int trueAnswer) {
         this.boxerImage = boxerImage;
         this.firstOption = firstOption;
         this.secondOption = secondOption;
@@ -38,7 +38,7 @@ public class Question {
         return fourthOption;
     }
 
-    public Integer getTrueAnswer() {
+    public int getTrueAnswer() {
         return trueAnswer;
     }
 
@@ -46,7 +46,7 @@ public class Question {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Question question = (Question) o;
-        return Objects.equals(boxerImage, question.boxerImage) && Objects.equals(firstOption, question.firstOption) && Objects.equals(secondOption, question.secondOption) && Objects.equals(thirdOption, question.thirdOption) && Objects.equals(fourthOption, question.fourthOption) && Objects.equals(trueAnswer, question.trueAnswer);
+        return trueAnswer == question.trueAnswer && Objects.equals(boxerImage, question.boxerImage) && Objects.equals(firstOption, question.firstOption) && Objects.equals(secondOption, question.secondOption) && Objects.equals(thirdOption, question.thirdOption) && Objects.equals(fourthOption, question.fourthOption);
     }
 
     @Override
